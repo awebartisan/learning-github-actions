@@ -1,0 +1,17 @@
+name: PostcodeShipping CI
+
+on: push
+
+jobs:
+  laravel-tests:
+    name: Run Laravel Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Composer dependencies
+        run: composer install
+
+      - name: Run tests
+        run: ./vendor/bin/phpunit
