@@ -1,4 +1,4 @@
-name: PostcodeShipping CI
+name: Learning Github Actions CI
 
 on: push
 
