@@ -13,11 +13,17 @@ jobs:
       - name: Create .env file
         run: cp .env.example .env
 
+      - name: Generate app key
+        run: php artisan key:generate
+
       - name: Composer dependencies
         run: composer install
 
-      - name: Generate app key
-        run: php artisan key:generate
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Run Mix
+        run: npm run prod
 
       - name: Run tests
         run: ./vendor/bin/phpunit
