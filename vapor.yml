@@ -4,7 +4,7 @@ environments:
     production:
         memory: 1024
         cli-memory: 512
-        runtime: 'php-7.4'
+        runtime: 'php-8.0:al2'
         database: gh_actions_production
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
@@ -15,7 +15,7 @@ environments:
     staging:
         memory: 1024
         cli-memory: 512
-        runtime: 'php-7.4'
+        runtime: 'php-8.0:al2'
         database: gh_actions_staging
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'

@@ -10,12 +10,25 @@ jobs:
   laravel-tests:
     name: Run Laravel Tests
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Setup PHP8
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+          extensions: mbstring, bcmath
+
       - name: Create .env file
         run: cp .env.example .env
+
+      - name: Cached composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: dependencies-composer-${{ hashFiles('composer.lock') }}
 
       - name: Composer dependencies
         env:
@@ -25,8 +38,22 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
+      - name: Setup Node.js version
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Cached NPM Dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: dependencies-npm-${{ hashFiles('package-lock.json') }}
+
       - name: Install NPM dependencies
-        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm install --ignore-scripts && npm rebuild # if we use npm ci here, it will remove the cached node_modules directory
 
       - name: Run Mix
         run: npm run prod
