@@ -45,6 +45,8 @@ jobs:
           key: dependencies-npm-${{ hashFiles('package-lock.json') }}
 
       - name: Install NPM dependencies
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm ci
 
       - name: Run Mix
