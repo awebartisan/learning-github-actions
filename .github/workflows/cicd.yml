@@ -65,11 +65,11 @@ jobs:
         if: github.ref == 'refs/heads/staging'
         env:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
-        run: php vendor/bin/vapor deploy staging
+        run: php vendor/bin/vapor deploy staging --message="${ github.event.head_commit.message }"
 
       - name: Deploy production
         if: github.ref == 'refs/heads/production'
         env:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
-        run: php vendor/bin/vapor deploy production
+        run: php vendor/bin/vapor deploy production --message="${ github.event.head_commit.message }"
 
