@@ -1,6 +1,10 @@
 name: Learning Github Actions CI
 
-on: push
+on: 
+  push:
+    branches:
+      - "production"
+      - "staging"
 
 jobs:
   laravel-tests:
@@ -29,3 +33,16 @@ jobs:
 
       - name: Run tests
         run: ./vendor/bin/phpunit
+
+      - name: Deploy staging
+        if: github.ref == 'refs/heads/develop'
+        env:
+          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
+        run: vapor deploy staging
+
+      - name: Deploy production
+        if: github.ref == 'refs/heads/production'
+        env:
+          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
+        run: vapor deploy production
+
