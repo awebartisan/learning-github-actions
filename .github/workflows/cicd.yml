@@ -35,7 +35,7 @@ jobs:
         run: ./vendor/bin/phpunit
 
       - name: Deploy staging
-        if: github.ref == 'refs/heads/develop'
+        if: github.ref == 'refs/heads/staging'
         env:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
         run: vapor deploy staging
