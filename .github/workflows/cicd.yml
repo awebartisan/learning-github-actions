@@ -24,6 +24,12 @@ jobs:
       - name: Create .env file
         run: cp .env.example .env
 
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: dependencies-composer-${{ hashFiles('composer.lock') }}
+
       - name: Composer dependencies
         env:
           COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
@@ -31,6 +37,12 @@ jobs:
 
       - name: Generate app key
         run: php artisan key:generate
+
+      - name: Cache NPM Dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: dependencies-npm-${{ hashFiles('package-lock.json') }}
 
       - name: Install NPM dependencies
         run: npm ci
