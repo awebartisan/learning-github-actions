@@ -1,5 +1,6 @@
 id: 18214
 name: gh-actions-testing
+separate-vendor: true
 environments:
     production:
         memory: 1024
