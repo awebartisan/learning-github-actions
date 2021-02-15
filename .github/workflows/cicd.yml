@@ -24,7 +24,7 @@ jobs:
       - name: Create .env file
         run: cp .env.example .env
 
-      - name: Cache composer dependencies
+      - name: Cached composer dependencies
         uses: actions/cache@v2
         with:
           path: vendor
@@ -38,7 +38,13 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
-      - name: Cache NPM Dependencies
+      - name: Setup Node.js version
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Cached NPM Dependencies
         uses: actions/cache@v2
         with:
           path: node_modules
@@ -46,8 +52,8 @@ jobs:
 
       - name: Install NPM dependencies
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm ci
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm install --ignore-scripts && npm rebuild # if we use npm ci here, it will remove the cached node_modules directory
 
       - name: Run Mix
         run: npm run prod
