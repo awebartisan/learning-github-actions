@@ -7,8 +7,8 @@ on:
       - "staging"
 
 jobs:
-  laravel-tests:
-    name: Run Laravel Tests
+  ci-cd:
+    name: Perform Continuous Integration and Deployment
     runs-on: ubuntu-latest
 
     steps:
@@ -29,4 +29,3 @@ jobs:
           release_name: v${{ steps.today.outputs.date }}
           draft: false
           prerelease: false
-
