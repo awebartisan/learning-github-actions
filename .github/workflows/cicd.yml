@@ -62,10 +62,12 @@ jobs:
         run: ./vendor/bin/phpunit
 
       - name: Get Today Date
+        if: github.ref == 'refs/heads/production'
         id: today
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M')"
 
       - name: Create Release
+        if: github.ref == 'refs/heads/production'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
