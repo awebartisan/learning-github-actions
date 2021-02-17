@@ -61,22 +61,9 @@ jobs:
       - name: Run tests
         run: ./vendor/bin/phpunit
 
-      - name: Deploy staging
-        if: github.ref == 'refs/heads/staging'
-        env:
-          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
-        run: php vendor/bin/vapor deploy staging --message="${{ github.event.head_commit.message }}"
-
-      - name: Deploy production
-        if: github.ref == 'refs/heads/production'
-        env:
-          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
-        run: php vendor/bin/vapor deploy production --message="${{ github.event.head_commit.message }}"
-
       - name: Get Today Date
         id: today
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M')"
-
 
       - name: Create Release
         uses: actions/create-release@v1
