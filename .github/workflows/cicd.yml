@@ -19,7 +19,7 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TODAY_DATE: php -r "date('Y-m-d');"
+          TODAY_DATE: ${{ php -r "date('Y-m-d');" }}
         with:
           tag_name: v${{ env.TODAY_DATE }}
           release_name: v${{ env.TODAY_DATE }}
