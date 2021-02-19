@@ -45,6 +45,8 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install NPM dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm ci
 
       - name: Run tests
