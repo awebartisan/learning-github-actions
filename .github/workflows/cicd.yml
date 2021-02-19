@@ -58,6 +58,9 @@ jobs:
       - name: Run Mix
         run: npm run prod
 
+      - name: Delete node_modules directory
+        run: rm -rf node_modules
+
       - name: Run tests
         run: ./vendor/bin/phpunit
       - name: "Deploy to Vapor Staging"
