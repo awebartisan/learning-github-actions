@@ -1,42 +1,24 @@
-name: Learning Github Actions CI
+name: "Learning GitHub Actions CI/CD"
 
-on: 
+on:
   push:
     branches:
-      - "production"
       - "staging"
+      - "production"
 
 jobs:
-  laravel-tests:
-    name: Run Laravel Tests
+  run-tests-and-deploy:
+    name: "Run tests and deploy on Vapor"
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: "Checkout code"
         uses: actions/checkout@v2
 
-      - name: Setup PHP8
+      - name: "Setup PHP 7.4"
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
-          extensions: mbstring, bcmath
-
-      - name: Create .env file
-        run: cp .env.example .env
-
-      - name: Cached composer dependencies
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: dependencies-composer-${{ hashFiles('composer.lock') }}
-
-      - name: Composer dependencies
-        env:
-          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
-        run: composer install
-
-      - name: Generate app key
-        run: php artisan key:generate
+          php-version: 7.4
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -46,12 +28,24 @@ jobs:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
 
-      # - name: Install NPM dependencies
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #   run: npm ci
+      - name: "Create .env file"
+        run: cp .env.example .env
 
-      - name: Run tests
+      - name: "Cache composer dependencies"
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: dependencies-composer-${{ hashFiles('composer.lock') }}
+
+      - name: "Install composer dependencies"
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+        run: composer install
+
+      - name: "Generate app key"
+        run: php artisan key:generate
+
+      - name: "Run PHPUnit Tests"
         run: ./vendor/bin/phpunit
 
       - name: "Deploy to Vapor Staging"
@@ -66,12 +60,12 @@ jobs:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
         run: php vendor/bin/vapor deploy production --message="${{ github.event.head_commit.message }}"
 
-      - name: Get Today Date
+      - name: "Get Today Date and Time"
         if: github.ref == 'refs/heads/production'
         id: today
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M')"
 
-      - name: Create Release
+      - name: "Create Release"
         if: github.ref == 'refs/heads/production'
         uses: actions/create-release@v1
         env:
