@@ -44,16 +44,10 @@ jobs:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Cached NPM Dependencies
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: dependencies-npm-${{ hashFiles('package-lock.json') }}
-
       - name: Install NPM dependencies
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm install --ignore-scripts && npm rebuild # if we use npm ci here, it will remove the cached node_modules directory
+        run: npm ci
 
       - name: Run Mix
         run: npm run prod
