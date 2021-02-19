@@ -10,8 +10,6 @@ jobs:
   laravel-tests:
     name: Run Laravel Tests
     runs-on: ubuntu-latest
-    env:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -44,7 +42,7 @@ jobs:
         run: ./vendor/bin/phpunit
 
       - name: NPM config set
-      - run: |
+        run: |
           npm config set "@additionapps:registry" https://registry.npmjs.com/
           npm config set "//registry.npmjs.com/:_authToken" ${{ secrets.NPM_TOKEN }}
         
