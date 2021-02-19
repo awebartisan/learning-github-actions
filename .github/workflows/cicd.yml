@@ -17,6 +17,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: echo
+        run: echo $NPM_TOKEN
+
       - name: Setup PHP8
         uses: shivammathur/setup-php@v2
         with:
