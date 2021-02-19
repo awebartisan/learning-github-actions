@@ -55,6 +55,9 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm install --ignore-scripts && npm rebuild # if we use npm ci here, it will remove the cached node_modules directory
 
+      - name: Run Mix
+        run: npm run prod
+
       - name: Run tests
         run: ./vendor/bin/phpunit
       - name: "Deploy to Vapor Staging"
