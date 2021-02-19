@@ -42,6 +42,11 @@ jobs:
 
       - name: Run tests
         run: ./vendor/bin/phpunit
+
+      - name: NPM config set
+      - run: |
+          npm config set "@additionapps:registry" https://registry.npmjs.com/
+          npm config set "//registry.npmjs.com/:_authToken" ${{ secrets.NPM_TOKEN }}
         
       - name: "Deploy to Vapor Staging"
         if: github.ref == 'refs/heads/staging'
