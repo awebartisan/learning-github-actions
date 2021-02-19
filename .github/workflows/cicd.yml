@@ -35,12 +35,6 @@ jobs:
           COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
         run: composer install
 
-      - name: Generate app key
-        run: php artisan key:generate
-
-      - name: Run tests
-        run: ./vendor/bin/phpunit
-
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
@@ -49,6 +43,12 @@ jobs:
 
       - name: Install NPM dependencies
         run: npm ci
+
+      - name: Generate app key
+        run: php artisan key:generate
+
+      - name: Run tests
+        run: ./vendor/bin/phpunit
 
       - name: "Deploy to Vapor Staging"
         if: github.ref == 'refs/heads/staging'
