@@ -38,30 +38,32 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
-      - name: NPM install
-        run: npm ci
+      - name: Setup Node.js version
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Cached NPM Dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: dependencies-npm-${{ hashFiles('package-lock.json') }}
+
+      - name: Install NPM dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm install --ignore-scripts && npm rebuild
 
       - name: Run tests
         run: ./vendor/bin/phpunit
-        
-      - name: "Deploy to Vapor Staging"
-        if: github.ref == 'refs/heads/staging'
-        env:
-          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
-        run: php vendor/bin/vapor deploy staging --message="${{ github.event.head_commit.message }}"
 
-      - name: "Deploy to Vapor Production"
-        if: github.ref == 'refs/heads/production'
-        env:
-          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
-        run: php vendor/bin/vapor deploy production --message="${{ github.event.head_commit.message }}"
-
-      - name: "Get Today Date and Time"
+      - name: Get Today Date
         if: github.ref == 'refs/heads/production'
         id: today
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M')"
 
-      - name: "Create Release"
+      - name: Create Release
         if: github.ref == 'refs/heads/production'
         uses: actions/create-release@v1
         env:
@@ -71,4 +73,3 @@ jobs:
           release_name: v${{ steps.today.outputs.date }}
           draft: false
           prerelease: false
-
