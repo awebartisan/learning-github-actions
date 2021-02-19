@@ -40,14 +40,16 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install NPM dependencies
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm ci
+      # - name: Install NPM dependencies
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: npm ci
 
       - name: Run tests
         run: ./vendor/bin/phpunit
