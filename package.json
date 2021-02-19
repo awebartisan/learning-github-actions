@@ -22,7 +22,6 @@
     },
     "dependencies": {
         "@additionapps/addition-polaris": "^3.8.1",
-        "@additionapps/polaris-form-builder": "^2.3.0",
         "@shopify/app-bridge-react": "^1.29.0",
         "@shopify/polaris": "^6.0.1",
         "react": "^17.0.1",
