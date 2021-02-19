@@ -44,12 +44,6 @@ jobs:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Cached NPM Dependencies
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: dependencies-npm-${{ hashFiles('package-lock.json') }}
-
       - name: Install NPM dependencies
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
