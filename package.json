@@ -15,9 +15,18 @@
         "autoprefixer": "^10.1.0",
         "axios": "^0.21",
         "laravel-mix": "^6.0.6",
-        "lodash": "^4.17.19",
+        "lodash": "^4.17.20",
         "postcss": "^8.2.1",
         "postcss-import": "^12.0.1",
         "tailwindcss": "^2.0.2"
+    },
+    "dependencies": {
+        "@additionapps/addition-polaris": "^3.8.1",
+        "@shopify/app-bridge-react": "^1.29.0",
+        "@shopify/polaris": "^6.0.1",
+        "react": "^17.0.1",
+        "react-dom": "^17.0.1",
+        "ts-loader": "^8.0.17",
+        "typescript": "^4.1.5"
     }
 }

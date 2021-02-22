@@ -16,7 +16,8 @@
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
         "laravel/vapor-cli": "^1.12",
-        "laravel/vapor-core": "^2.10"
+        "laravel/vapor-core": "^2.10",
+        "spatie/laravel-ray": "^1.12"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

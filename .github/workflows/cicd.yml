@@ -1,75 +1,77 @@
-name: Learning Github Actions CI
+name: "Learning GitHub Actions CI/CD"
 
-on: 
+on:
   push:
     branches:
-      - "production"
       - "staging"
+      - "production"
 
 jobs:
-  laravel-tests:
-    name: Run Laravel Tests
+  run-tests-and-deploy:
+    name: "Run tests and deploy on Vapor"
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: "Checkout code"
         uses: actions/checkout@v2
 
-      - name: Setup PHP8
+      - name: "Setup PHP 7.4"
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
-          extensions: mbstring, bcmath
+          php-version: 7.4
 
-      - name: Create .env file
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: "Create .env file"
         run: cp .env.example .env
 
-      - name: Cached composer dependencies
+      - name: "Cache composer dependencies"
         uses: actions/cache@v2
         with:
           path: vendor
           key: dependencies-composer-${{ hashFiles('composer.lock') }}
 
-      - name: Composer dependencies
+      - name: "Install composer dependencies"
         env:
           COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
         run: composer install
 
-      - name: Generate app key
+      - name: "Generate app key"
         run: php artisan key:generate
 
-      - name: Setup Node.js version
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Cached NPM Dependencies
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: dependencies-npm-${{ hashFiles('package-lock.json') }}
-
-      - name: Install NPM dependencies
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm install --ignore-scripts && npm rebuild # if we use npm ci here, it will remove the cached node_modules directory
-
-      - name: Run Mix
-        run: npm run prod
-
-      - name: Run tests
+      - name: "Run PHPUnit Tests"
         run: ./vendor/bin/phpunit
 
-      - name: Deploy staging
+      - name: "Deploy to Vapor Staging"
         if: github.ref == 'refs/heads/staging'
         env:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
-        run: php vendor/bin/vapor deploy staging
+        run: php vendor/bin/vapor deploy staging --message="${{ github.event.head_commit.message }}"
 
-      - name: Deploy production
+      - name: "Deploy to Vapor Production"
         if: github.ref == 'refs/heads/production'
         env:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
-        run: php vendor/bin/vapor deploy production
+        run: php vendor/bin/vapor deploy production --message="${{ github.event.head_commit.message }}"
 
+      - name: "Get Today Date and Time"
+        if: github.ref == 'refs/heads/production'
+        id: today
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M')"
+
+      - name: "Create Release"
+        if: github.ref == 'refs/heads/production'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.today.outputs.date }}
+          release_name: v${{ steps.today.outputs.date }}
+          draft: false
+          prerelease: false
